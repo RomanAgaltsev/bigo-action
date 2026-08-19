@@ -1,0 +1,32 @@
+# Contract test, side 2. bigo's CI consumes this action on every PR, which
+# catches breakage the moment bigo causes it. This job catches the other
+# direction: runner or toolchain drift while bigo is quiet.
+name: contract
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  schedule:
+    - cron: "17 6 * * 1" # Mondays, after Dependabot's weekly run
+
+permissions:
+  contents: read
+
+jobs:
+  against-latest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-go@v5
+        with:
+          go-version: stable
+      - name: Run this action against bigo@latest
+        uses: ./
+        with:
+          working-directory: testdata/quadratic
+          fail-on: none
+          comment: "false"
+          bigo-version: latest
