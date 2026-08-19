@@ -58,3 +58,16 @@ See [what bigo does not count](https://github.com/RomanAgaltsev/bigo#what-bigo-d
 ## License
 
 MIT — see [LICENSE](LICENSE).
+
+## Releasing
+
+Tagged by hand — this is one YAML file that changes rarely, and the floating
+`v1` is what consumers actually pin to:
+
+```sh
+git tag vX.Y.Z && git tag -f v1 && git push origin vX.Y.Z && git push -f origin v1
+gh release create vX.Y.Z --title vX.Y.Z --notes "..."
+```
+
+Re-point `v1` on every release, or `uses: ...@v1` silently keeps serving the
+old action.
