@@ -27,7 +27,7 @@ PR, diffs the two reports, and posts a single comment that updates in place.
 | `packages` | `./...` | Package patterns to analyze. |
 | `fail-on` | `none` | `none` reports only; `break` fails on a broken budget or a new function already over budget; `regression` also fails on a proven asymptotic regression in unbudgeted code. |
 | `comment` | `true` | Post/update a single PR comment. |
-| `bigo-version` | `latest` | Version of bigo to install, e.g. `v1.48.2`. |
+| `bigo-version` | `latest` | Version of bigo to install, e.g. `v1.48.2`. `none` skips installation and uses the bigo already on PATH. |
 | `github-token` | `github.token` | Token used to post the comment. |
 
 ## Output

@@ -25,7 +25,11 @@ inputs:
     required: false
     default: "true"
   bigo-version:
-    description: Version of bigo to install, e.g. v1.20.0 or latest.
+    description: >
+      Version of bigo to install, e.g. v1.20.0 or latest. Use `none` to skip
+      installation and run whatever bigo is already on PATH - which is how a
+      bigo pull request tests ITS OWN binary against this action, rather than
+      against the last release.
     required: false
     default: latest
   github-token:
@@ -42,8 +46,23 @@ runs:
   using: composite
   steps:
     - name: Install bigo
+      if: ${{ inputs.bigo-version != 'none' }}
       shell: bash
       run: go install github.com/RomanAgaltsev/bigo/cmd/bigo@${{ inputs.bigo-version }}
+
+    # bigo-version: none means "use the binary already on PATH". It exists so a
+    # bigo PR can build its own CLI and test it against the PUBLISHED action:
+    # with `latest` the action installs the last RELEASE, so a PR that breaks
+    # the CLI contract would run against the old working binary and pass.
+    - name: Use the bigo already on PATH
+      if: ${{ inputs.bigo-version == 'none' }}
+      shell: bash
+      run: |
+        if ! command -v bigo >/dev/null; then
+          echo "::error::bigo-version: none was requested but no bigo binary is on PATH"
+          exit 1
+        fi
+        echo "using $(command -v bigo) - $(bigo -version)"
 
     - name: Analyze head
       shell: bash
